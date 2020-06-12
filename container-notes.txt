@@ -1,0 +1,16 @@
+# Build the container
+docker build -t mnolan98/apm-service .
+
+docker run -p 49160:3000 -d mnolan98/apm-service
+docker run -p 49160:3000 mnolan98/apm-service
+
+docker tag mnolan98/apm-service:latest mnolan98/apm-service:0.0.3
+docker push mnolan98/apm-service:latest
+
+kubectl apply -f k8s.yaml -n demo
+kubectl delete -f k8s.yaml -n demo
+
+
+http://localhost:3000/users
+http://localhost:49160/users
+http://192.168.99.100:30007/users
