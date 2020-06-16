@@ -3,14 +3,14 @@ kind: Service
 metadata:
   name: apm-service-proxy
 spec:
-  type: NodePort
+#  type: NodePort
   selector:
     app: apm-service
   ports:
     - protocol: TCP
       port: 3000
       targetPort: 3000
-      nodePort: 30007
+#      nodePort: 30007
 ---
 apiVersion: apps/v1
 kind: Deployment
@@ -30,7 +30,7 @@ spec:
     spec:
       containers:
         - name: apm-service
-          image: mnolan98/apm-service:0.0.3
+          image: mnolan98/apm-service:0.0.4
           ports:
             - containerPort: 3000
 

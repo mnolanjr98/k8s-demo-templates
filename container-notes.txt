@@ -7,10 +7,24 @@ docker run -p 49160:3000 mnolan98/apm-service
 docker tag mnolan98/apm-service:latest mnolan98/apm-service:0.0.3
 docker push mnolan98/apm-service:latest
 
-kubectl apply -f k8s.yaml -n demo
-kubectl delete -f k8s.yaml -n demo
+kubectl create namespace demo
+kubectl apply -f apm-service-deployment.yml -n demo
+kubectl delete -f apm-service-deployment.yml -n demo
+
+kubectl apply -f nginx-http-deployment.yml -n demo
+kubectl delete -f nginx-http-deployment.yml -n demo
+
+kubectl create -n demo configmap apm-svc-http-nonprod-default-conf --from-file=./nginx/conf.d/default.conf
+kubectl create -n demo configmap apm-svc-http-nonprod-nginx-conf --from-file=./nginx/nginx.conf
+
+kubectl delete -n demo configmap apm-svc-http-nonprod-default-conf
+kubectl describe --n demo configmap apm-svc-http-nonprod-default-conf
+
+kubectl delete -n demo configmap apm-svc-http-nonprod-nginx-conf
+kubectl describe -n demo configmap apm-svc-http-nonprod-nginx-conf
 
 
 http://localhost:3000/users
 http://localhost:49160/users
 http://192.168.99.100:30007/users
+https://192.168.99.100:30003/api/users

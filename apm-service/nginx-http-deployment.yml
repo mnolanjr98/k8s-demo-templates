@@ -1,0 +1,66 @@
+kind: Deployment
+apiVersion: apps/v1
+metadata:
+  name: apm-svc-http-nonprod-deployment
+  labels:
+      app: apm-svc-http-nonprod
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: apm-svc-http-nonprod
+  template:
+    metadata:
+      labels:
+        app: apm-svc-http-nonprod
+    spec:
+      containers:
+      - name: apm-svc-http-nonprod-pod
+        image: nginx
+        ports:
+        - containerPort: 443
+        volumeMounts: 
+        - mountPath: /etc/nginx/thoughtbend.crt
+          subPath: thoughtbend.crt
+          name: tls-cert-files
+          readOnly: true
+        - mountPath: /etc/nginx/thoughtbend.key
+          subPath: thoughtbend.key
+          name: tls-cert-files
+          readOnly: true
+        - mountPath: /etc/nginx/conf.d/default.conf
+          subPath: default.conf
+          name: default-conf-file
+        - mountPath: /etc/nginx/nginx.conf
+          subPath: nginx.conf
+          name: nginx-conf-file
+      volumes:
+      - name: default-conf-file
+        configMap:
+          name: apm-svc-http-nonprod-default-conf
+      - name: nginx-conf-file
+        configMap:
+          name: apm-svc-http-nonprod-nginx-conf
+      - name: tls-cert-files
+        secret:
+          secretName: apm-svc-http-nonprod-tls-cert
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: apm-svc-http-nonprod-svc
+  labels:
+# This matches the app in the rc, not the rc
+    app: apm-svc-http-nonprod
+spec:
+  type: NodePort
+# types are 
+# ClusterIP for a stable internal cluster ip
+# NodePort for exposing the the port outside the cluster, on top of stable internal ip
+# LoadBalancer integrates NodePort with cloud-based load balancer
+  ports:
+  - port: 443
+    nodePort: 30003
+    protocol: TCP
+  selector:
+    app: apm-svc-http-nonprod
