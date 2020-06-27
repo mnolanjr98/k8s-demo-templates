@@ -1,0 +1,20 @@
+vlog - Running MongoDB Replica Set in K8s
+
+1) Show the configuration locally 
+- Mongo already installed locally via Brew, start it up
+- Go through the Code really quickly - highlight the configuration
+- (Before doing this, get a general error handler middleware in express working to cleanup code)
+
+2) Install the Core Mongo DB Customer Resource Def
+- Explain Operators briefly
+- Show the Download site
+- Walk through the steps of installation
+
+3) Create the replica set
+- Note that currently it seems like all needs to be in the same namespace
+
+4) Update application code
+- Show the couple of URI changes
+- Show the environment variables
+- Update the k8s deployment to have environment variables
+- Remove nginx from the demo picture (maybe)

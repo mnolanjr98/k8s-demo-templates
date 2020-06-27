@@ -19,7 +19,7 @@ metadata:
   labels:
     app: apm-service
 spec:
-  replicas: 3
+  replicas: 1
   selector:
     matchLabels:
       app: apm-service
@@ -30,7 +30,13 @@ spec:
     spec:
       containers:
         - name: apm-service
-          image: mnolan98/apm-service:0.0.4
+          image: mnolan98/apm-service:0.0.10
+          env:
+          - name: MONGO_DB_URL
+            value: "test-mongodb-0.test-mongodb-svc.mongodb.svc.cluster.local:27017,test-mongodb-1.test-mongodb-svc.mongodb.svc.cluster.local:27017,test-mongodb-2.test-mongodb-svc.mongodb.svc.cluster.local:27017"
+#            value: "test-mongodb-svc.mongodb:27017"
+          - name: MONGO_REPL_SET
+            value: "replicaSet=mongodb/test-mongodb"
           ports:
             - containerPort: 3000
 

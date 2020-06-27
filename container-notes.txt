@@ -4,15 +4,20 @@ docker build -t mnolan98/apm-service .
 docker run -p 49160:3000 -d mnolan98/apm-service
 docker run -p 49160:3000 mnolan98/apm-service
 
-docker tag mnolan98/apm-service:latest mnolan98/apm-service:0.0.3
+docker tag mnolan98/apm-service:latest mnolan98/apm-service:0.0.6
 docker push mnolan98/apm-service:latest
+
+minikube start --profile=apm --cpus=4 --memory=8g --driver=virtualbox
+
 
 kubectl create namespace demo
 kubectl apply -f apm-service-deployment.yml -n demo
 kubectl delete -f apm-service-deployment.yml -n demo
 
+kubectl apply -f nginx-http-cert.yml -n demo
 kubectl apply -f nginx-http-deployment.yml -n demo
 kubectl delete -f nginx-http-deployment.yml -n demo
+kubectl delete -f nginx-http-cert.yml -n demo
 
 kubectl create -n demo configmap apm-svc-http-nonprod-default-conf --from-file=./nginx/conf.d/default.conf
 kubectl create -n demo configmap apm-svc-http-nonprod-nginx-conf --from-file=./nginx/nginx.conf
@@ -22,6 +27,21 @@ kubectl describe --n demo configmap apm-svc-http-nonprod-default-conf
 
 kubectl delete -n demo configmap apm-svc-http-nonprod-nginx-conf
 kubectl describe -n demo configmap apm-svc-http-nonprod-nginx-conf
+
+# https://docs.mongodb.com/kubernetes-operator/master/tutorial/install-k8s-operator/
+# https://github.com/mongodb/mongodb-kubernetes-operator
+# After creating the mongodb namespace
+# https://mongoosejs.com/docs/connections.html#replicaset_connections
+
+# https://github.com/nodejs/node/issues/15780
+# https://pracucci.com/kubernetes-dns-resolution-ndots-options-and-why-it-may-affect-application-performances.html
+
+
+
+#local mongo install
+# after restart
+brew services start mongodb/brew/mongodb-community (background)
+mongod --config /usr/local/etc/mongod.conf (foreground)
 
 
 http://localhost:3000/users
