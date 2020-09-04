@@ -31,6 +31,11 @@ spec:
       containers:
         - name: apm-service
           image: mnolan98/apm-service:0.0.10
+          resources:
+            limits:
+              cpu: "1"
+            requests:
+              cpu: "0.5"
           env:
           - name: MONGO_DB_URL
             value: "test-mongodb-0.test-mongodb-svc.mongodb.svc.cluster.local:27017,test-mongodb-1.test-mongodb-svc.mongodb.svc.cluster.local:27017,test-mongodb-2.test-mongodb-svc.mongodb.svc.cluster.local:27017"

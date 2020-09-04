@@ -1,0 +1,16 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: apm-svc-job
+spec:
+  ttlSecondsAfterFinished: 60
+  template:
+    spec:
+      containers:
+      - name: apm-svc-job
+        image: mnolan98/apm-svc-job:0.0.2
+        command: ["npm", "start", "2020-Jul-10"]
+      restartPolicy: Never
+  completions: 10
+  parallelism: 2
+  backoffLimit: 4
